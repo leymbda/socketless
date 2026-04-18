@@ -14,6 +14,7 @@ builder.ConfigureFunctionsWebApplication();
 builder.Services
     .AddApplicationInsightsTelemetryWorkerService()
     .ConfigureFunctionsApplicationInsights()
+    // TODO: How to register durable task client?!?
     .AddSingleton(_ => new ArmClient(new DefaultAzureCredential()))
     .AddSingleton<IResourceManager, AzureResourceManager>();
 

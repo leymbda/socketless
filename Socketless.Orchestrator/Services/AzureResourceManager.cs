@@ -65,7 +65,7 @@ public class AzureResourceManager(ArmClient client) : IResourceManager
     }
 
     private string GetStackName(InstanceId instanceId) =>
-        $"socketless-stack-{instanceId.Value.ToString()}";
+        $"socketless-stack-{instanceId.Value}";
 
     private IReadOnlyDictionary<string, string> GetDeploymentOutputs(BinaryData data)
     {
