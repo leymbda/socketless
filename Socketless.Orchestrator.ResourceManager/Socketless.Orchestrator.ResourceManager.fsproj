@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Arm.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Identity" Version="1.21.0" />
+    <PackageReference Include="Azure.ResourceManager" Version="1.14.0" />
+    <PackageReference Include="Azure.ResourceManager.Resources.DeploymentStacks" Version="1.0.0" />
+    <PackageReference Include="FsToolkit.ErrorHandling" Version="5.2.0" />
+  </ItemGroup>
+
+</Project>

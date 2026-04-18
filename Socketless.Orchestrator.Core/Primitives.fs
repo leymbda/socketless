@@ -13,5 +13,5 @@ type ShardId = {
     ShardCount: uint16
 }
 
-/// A unique identifier for a node.
-type [<Struct>] NodeId = NodeId of Guid
+/// A unique instance identifier for a node.
+type [<Struct>] InstanceId = InstanceId of Guid

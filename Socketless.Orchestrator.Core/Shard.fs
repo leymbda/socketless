@@ -1,6 +1,7 @@
 namespace Socketless.Orchestrator.Core
 
 open System
+open System.Net
 
 /// The current state of a shard.
 type ShardState =
@@ -16,6 +17,8 @@ type Shard = {
     Id: ShardId
     State: ShardState
     Cost: float
+    PublicIp: IPAddress
+    Port: int
     CreatedAt: DateTime
 }
 
@@ -24,11 +27,11 @@ module Shard =
         (float applicationGuildCount / float shardCount / 150.0) + 1.0
 
     /// Create a shard.
-    let create applicationId shardIndex shardCount applicationGuildCount state createdAt =
+    let create applicationId shardIndex shardCount applicationGuildCount state publicIp port createdAt =
         let id = { ApplicationId = applicationId; ShardIndex = shardIndex; ShardCount = shardCount }
         let cost = calculateCost applicationGuildCount shardCount
 
-        { Id = id; State = state; Cost = cost; CreatedAt = createdAt }
+        { Id = id; State = state; Cost = cost; PublicIp = publicIp; Port = port; CreatedAt = createdAt }
 
     /// Update the state of a shard.
     let setState state shard =
