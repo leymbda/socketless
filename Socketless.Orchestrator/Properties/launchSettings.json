@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "Socketless.Orchestrator": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7247",
+      "launchBrowser": false
+    }
+  }
+}

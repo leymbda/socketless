@@ -1,4 +1,3 @@
 <Solution>
-  <Project Path="Socketless.Orchestrator.Core/Socketless.Orchestrator.Core.fsproj" />
-  <Project Path="Socketless.Orchestrator.ResourceManager/Socketless.Orchestrator.ResourceManager.fsproj" Id="118239eb-ce21-44dd-8480-e8c5e16c99ab" />
+  <Project Path="Socketless.Orchestrator/Socketless.Orchestrator.csproj" Id="35d6f426-cc06-44ad-955b-5c4eaf045ea3" />
 </Solution>
