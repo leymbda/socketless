@@ -21,7 +21,7 @@ public class AzureResourceManager(ArmClient client) : IResourceManager
 
     // TODO: Proper options configuration rather than direct env variable access
 
-    public async Task<Node> CreateNode(InstanceId instanceId)
+    public async Task<Node> CreateNode(NodeId nodeId)
     {
         var subscription = await client.GetDefaultSubscriptionAsync();
         ResourceGroupResource resourceGroup = await subscription.GetResourceGroups().GetAsync(_resourceGroupName);
@@ -37,12 +37,12 @@ public class AzureResourceManager(ArmClient client) : IResourceManager
         stackData.Parameters.Add("vnetName", new DeploymentParameterItem() { Value = new BinaryData(_vnetName) });
         stackData.Parameters.Add("subnetName", new DeploymentParameterItem() { Value = new BinaryData(_subnetName) });
         stackData.Parameters.Add("sshPublicKey", new DeploymentParameterItem() { Value = new BinaryData(_sshPublicKey) });
-        stackData.Parameters.Add("instanceId", new DeploymentParameterItem() { Value = new BinaryData(instanceId.Value.ToString()) });
+        stackData.Parameters.Add("nodeId", new DeploymentParameterItem() { Value = new BinaryData(nodeId.ToString()) });
         // TODO: 'additionalIpResourceIds' to handle dedicated IPs
 
         var operation = await client
             .GetDeploymentStacks(resourceGroup.Id)
-            .CreateOrUpdateAsync(WaitUntil.Completed, GetStackName(instanceId), stackData);
+            .CreateOrUpdateAsync(WaitUntil.Completed, GetStackName(nodeId), stackData);
 
         // Get outputs of stack
         var outputs = GetDeploymentOutputs(operation.Value.Data.Outputs);
@@ -52,20 +52,20 @@ public class AzureResourceManager(ArmClient client) : IResourceManager
         throw new NotImplementedException(); // TODO: Return node
     }
 
-    public async Task DeleteNode(InstanceId instanceId)
+    public async Task DeleteNode(NodeId nodeId)
     {
         var subscription = await client.GetDefaultSubscriptionAsync();
         ResourceGroupResource resourceGroup = await subscription.GetResourceGroups().GetAsync(_resourceGroupName);
 
         DeploymentStackResource stack = await client
             .GetDeploymentStacks(resourceGroup.Id)
-            .GetAsync(GetStackName(instanceId));
+            .GetAsync(GetStackName(nodeId));
         
         await stack.DeleteAsync(WaitUntil.Completed);
     }
 
-    private string GetStackName(InstanceId instanceId) =>
-        $"socketless-stack-{instanceId.Value}";
+    private string GetStackName(NodeId nodeId) =>
+        $"socketless-stack-{nodeId.Value}";
 
     private IReadOnlyDictionary<string, string> GetDeploymentOutputs(BinaryData data)
     {

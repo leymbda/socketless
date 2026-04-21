@@ -1,5 +1,4 @@
-﻿using Socketless.Orchestrator.Common;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Net;
 
 namespace Socketless.Orchestrator.Entities;
@@ -13,21 +12,21 @@ public class Node
     private readonly Dictionary<IPAddress, IPAddress> _ipAddresses;
     private readonly IPAddress _primaryIpAddress;
 
-    public InstanceId InstanceId { get; init; }
+    public NodeId Id { get; }
 
     public IReadOnlyDictionary<ShardId, Shard> Shards { get; }
 
     public IReadOnlyDictionary<IPAddress, IPAddress> IpAddresses { get; }
 
-    public DateTime CreatedAt { get; init; }
+    public DateTime CreatedAt { get; }
 
     public int Space => MaximumShards - Shards.Count;
 
     public float Balance => InitialBalance - Shards.Values.Sum(s => s.Cost);
 
-    public Node(InstanceId instanceId, IPAddress primaryPublicIp, IPAddress primaryPrivateIp, DateTime createdAt)
+    public Node(NodeId id, IPAddress primaryPublicIp, IPAddress primaryPrivateIp, DateTime createdAt)
     {
-        InstanceId = instanceId;
+        Id = id;
         CreatedAt = createdAt;
         _primaryIpAddress = primaryPublicIp;
         _ipAddresses = new() { [primaryPublicIp] = primaryPrivateIp };
@@ -92,3 +91,14 @@ public class Node
         _ipAddresses.Remove(publicIp);
     }
 }
+
+public readonly record struct NodeId(Guid Value)
+{
+    public static NodeId New() => new(Guid.NewGuid());
+
+    public static NodeId Parse(string value) => new(Guid.Parse(value));
+
+    public override string ToString() => Value.ToString();
+}
+
+// TODO: Shouldn't be concerned with specific IP addresses

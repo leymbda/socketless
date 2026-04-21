@@ -3,16 +3,6 @@ using System.Net;
 
 namespace Socketless.Orchestrator.Entities;
 
-public enum ShardState
-{
-    Connecting,
-    Identifying,
-    Resuming,
-    Ready,
-    Reconnecting,
-    Disconnected,
-}
-
 public class Shard(
     ShardId id,
     ShardState state,
@@ -22,13 +12,13 @@ public class Shard(
 {
     private int _applicationGuildCount = applicationGuildCount;
 
-    public ShardId Id { get; init; } = id;
+    public ShardId Id { get; } = id;
 
     public ShardState State { get; private set; } = state;
 
-    public IPAddress PublicIpAddress { get; init; } = publicIpAddress;
+    public IPAddress PublicIpAddress { get; } = publicIpAddress;
 
-    public DateTime CreatedAt { get; init; } = createdAt;
+    public DateTime CreatedAt { get; } = createdAt;
 
     public float Cost => (float)_applicationGuildCount / Id.ShardCount / 150 + 1;
 
@@ -58,3 +48,19 @@ public class Shard(
         _applicationGuildCount = applicationGuildCount;
     }
 }
+
+public readonly record struct ShardId(Snowflake Snowflake, ushort ShardIndex, ushort ShardCount);
+
+// TODO: parse/toString for ShardId
+
+public enum ShardState
+{
+    Connecting,
+    Identifying,
+    Resuming,
+    Ready,
+    Reconnecting,
+    Disconnected,
+}
+
+// TODO: Shouldn't be concerned with specific IP addresses

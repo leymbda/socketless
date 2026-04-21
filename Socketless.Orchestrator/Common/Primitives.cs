@@ -1,7 +1,8 @@
 ﻿namespace Socketless.Orchestrator.Common;
 
-public readonly record struct Snowflake(ulong Value);
+public readonly record struct Snowflake(ulong Value)
+{
+    public static Snowflake Parse(string value) => new(ulong.Parse(value));
 
-public readonly record struct ShardId(Snowflake Snowflake, ushort ShardIndex, ushort ShardCount);
-
-public readonly record struct InstanceId(Guid Value);
+    public override string ToString() => Value.ToString();
+}
