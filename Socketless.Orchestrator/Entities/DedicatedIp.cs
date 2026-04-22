@@ -1,5 +1,10 @@
 ﻿namespace Socketless.Orchestrator.Entities;
 
+public class DedicatedIp(DedicatedIpId id)
+{
+    public DedicatedIpId Id { get; } = id;
+}
+
 public readonly record struct DedicatedIpId(Guid Value)
 {
     public static DedicatedIpId New() => new(Guid.NewGuid());

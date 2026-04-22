@@ -11,23 +11,36 @@ public class ClientEntity : TaskEntity<ClientEntityState>
 
     public ClientEntityState GetState() => State;
 
+    /// <summary>
+    /// Add an app to the client.
+    /// </summary>
     public void AddApp(AppId appId) =>
         State.Apps.Add(appId);
 
+    /// <summary>
+    /// Remove an app from the client.
+    /// </summary>
     public void RemoveApp(AppId appId) =>
         State.Apps.Remove(appId);
 
-    public void OnDedicatedIpAssigned(ClientEntityDedicatedIpId dedicatedIp) =>
-        State.IpAddresses.Add(dedicatedIp);
+    /// <summary>
+    /// Update state to reflect an attached dedicated IP being used for this client.
+    /// </summary>
+    public void OnDedicatedIpAttached(ClientEntityOnDedicatedIpAttachedInput input) =>
+        State.IpAddresses.Add(new ClientEntityDedicatedIpId(input.IpId, input.NodeId));
 
-    public void OnDedicatedIpRemoved(ClientEntityDedicatedIpId dedicatedIp) =>
-        State.IpAddresses.Remove(dedicatedIp);
+    /// <summary>
+    /// Update state to reflect a detached dedicated IP that was previously being used for this client.
+    /// </summary>
+    public void OnDedicatedIpDetached(ClientEntityOnDedicatedIpDetachedInput input) =>
+        State.IpAddresses.Remove(new ClientEntityDedicatedIpId(input.IpId, input.NodeId));
 
     [Function(nameof(ClientEntity))]
     public static Task RunEntityAsync([EntityTrigger] TaskEntityDispatcher dispatcher)
         => dispatcher.DispatchAsync<ClientEntity>();
 }
 
+// State
 public class ClientEntityState
 {
     public HashSet<AppId> Apps { get; set; } = [];
@@ -36,3 +49,8 @@ public class ClientEntityState
 }
 
 public record ClientEntityDedicatedIpId(DedicatedIpId IpId, NodeId NodeId);
+
+// Inputs
+public record ClientEntityOnDedicatedIpAttachedInput(DedicatedIpId IpId, NodeId NodeId);
+
+public record ClientEntityOnDedicatedIpDetachedInput(DedicatedIpId IpId, NodeId NodeId);

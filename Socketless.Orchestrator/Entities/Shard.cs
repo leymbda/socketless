@@ -1,57 +1,21 @@
 ﻿using Socketless.Orchestrator.Common;
-using System.Net;
 
 namespace Socketless.Orchestrator.Entities;
 
-public class Shard(
-    ShardId id,
-    ShardState state,
-    int applicationGuildCount,
-    IPAddress publicIpAddress,
-    DateTime createdAt)
+public readonly record struct ShardId(Snowflake Snowflake, ushort ShardIndex, ushort ShardCount)
 {
-    private int _applicationGuildCount = applicationGuildCount;
-
-    public ShardId Id { get; } = id;
-
-    public ShardState State { get; private set; } = state;
-
-    public IPAddress PublicIpAddress { get; } = publicIpAddress;
-
-    public DateTime CreatedAt { get; } = createdAt;
-
-    public float Cost => (float)_applicationGuildCount / Id.ShardCount / 150 + 1;
-
-    /// <summary>
-    /// Set the crurent state of the shard.
-    /// </summary>
-    /// <param name="state">The new state to set</param>
-    /// <exception cref="ArgumentOutOfRangeException">Occurs if the given state is not a defined enum value</exception>
-    public void SetState(ShardState state)
+    public static ShardId Parse(string value)
     {
-        if (!Enum.IsDefined(state))
-            throw new ArgumentOutOfRangeException(nameof(state), "State must be a defined enum value");
+        var parts = value.Split(':');
 
-        State = state;
+        if (parts.Length != 3)
+            throw new FormatException("Invalid shard ID format. Expected format: {snowflake}:{shardIndex}:{shardCount}");
+    
+        return new ShardId(Snowflake.Parse(parts[0]), ushort.Parse(parts[1]), ushort.Parse(parts[2]));
     }
-
-    /// <summary>
-    /// Updates the number of guilds the application is handling across shards. Used to approximate the cost of this shard.
-    /// </summary>
-    /// <param name="applicationGuildCount">The total guilds the application is installed on, across all shards</param>
-    /// <exception cref="ArgumentOutOfRangeException">Occurs if the given guild count is negative</exception>
-    public void UpdateApplicationGuildCount(int applicationGuildCount)
-    {
-        if (applicationGuildCount < 0)
-            throw new ArgumentOutOfRangeException(nameof(applicationGuildCount), "Application guild count cannot be negative.");
-        
-        _applicationGuildCount = applicationGuildCount;
-    }
+    
+    public override string ToString() => $"{Snowflake}:{ShardIndex}:{ShardCount}";
 }
-
-public readonly record struct ShardId(Snowflake Snowflake, ushort ShardIndex, ushort ShardCount);
-
-// TODO: parse/toString for ShardId
 
 public enum ShardState
 {
@@ -62,5 +26,3 @@ public enum ShardState
     Reconnecting,
     Disconnected,
 }
-
-// TODO: Shouldn't be concerned with specific IP addresses

@@ -2,11 +2,11 @@
 
 namespace Socketless.Orchestrator.Entities;
 
-public class App(AppId id)
+public class App(AppId id, AppIpTier ipTier)
 {
     public AppId Id { get; } = id;
 
-    public AppIpTier IpTier { get; private set; } = AppIpTier.Shared;
+    public AppIpTier IpTier { get; private set; } = ipTier;
 
     public void SetIpTier(AppIpTier ipTier)
     {
