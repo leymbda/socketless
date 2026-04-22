@@ -8,3 +8,10 @@ public readonly record struct Snowflake(ulong Value)
 
     public override string ToString() => Value.ToString();
 }
+
+public readonly record struct AppToken(string Value)
+{
+    public static AppToken Parse(string value) => new(value);
+
+    public override string ToString() => Value;
+}

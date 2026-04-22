@@ -33,3 +33,5 @@ public class DedicatedIpEntityState
 {
     public NodeId? NodeId { get; set; } = null;
 }
+
+// TODO: Does dedicated IP need an entity, or is an orchestrator that just awaits an event to delete sufficient?

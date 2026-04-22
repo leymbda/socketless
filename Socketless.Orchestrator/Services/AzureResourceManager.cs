@@ -4,7 +4,6 @@ using Azure.ResourceManager;
 using Azure.ResourceManager.Resources;
 using Azure.ResourceManager.Resources.DeploymentStacks;
 using Azure.ResourceManager.Resources.DeploymentStacks.Models;
-using Socketless.Orchestrator.Common;
 using Socketless.Orchestrator.Entities;
 using Socketless.Orchestrator.Interfaces;
 using System.Collections.ObjectModel;
@@ -21,7 +20,7 @@ public class AzureResourceManager(ArmClient client) : IResourceManager
 
     // TODO: Proper options configuration rather than direct env variable access
 
-    public async Task<Node> CreateNode(NodeId nodeId)
+    public async Task<NodeId> CreateNodeAsync(NodeId nodeId)
     {
         var subscription = await client.GetDefaultSubscriptionAsync();
         ResourceGroupResource resourceGroup = await subscription.GetResourceGroups().GetAsync(_resourceGroupName);
@@ -52,7 +51,7 @@ public class AzureResourceManager(ArmClient client) : IResourceManager
         throw new NotImplementedException(); // TODO: Return node
     }
 
-    public async Task DeleteNode(NodeId nodeId)
+    public async Task DeleteNodeAsync(NodeId nodeId)
     {
         var subscription = await client.GetDefaultSubscriptionAsync();
         ResourceGroupResource resourceGroup = await subscription.GetResourceGroups().GetAsync(_resourceGroupName);
