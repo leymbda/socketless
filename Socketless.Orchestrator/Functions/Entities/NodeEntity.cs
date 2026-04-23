@@ -1,9 +1,10 @@
-﻿using Microsoft.Azure.Functions.Worker;
+﻿using Microsoft.DurableTask;
 using Microsoft.DurableTask.Entities;
 using Socketless.Orchestrator.Entities;
 
-namespace Socketless.Orchestrator.Functions;
+namespace Socketless.Orchestrator.Functions.Entities;
 
+[DurableTask]
 public class NodeEntity : TaskEntity<NodeEntityState>
 {
     public static EntityInstanceId Id(NodeId nodeId) =>
@@ -52,14 +53,8 @@ public class NodeEntity : TaskEntity<NodeEntityState>
     /// </summary>
     public void OnDedicatedIpDetached(DedicatedIpId dedicatedIpId) =>
         State.IpAddresses.Remove(dedicatedIpId);
-
-    [Function(nameof(NodeEntity))]
-    public static Task RunEntityAsync([EntityTrigger] TaskEntityDispatcher dispatcher)
-        => dispatcher.DispatchAsync<NodeEntity>();
-
 }
 
-// State
 public class NodeEntityState
 {
     public NodeEntityStatus Status { get; set; } = NodeEntityStatus.Initializing;

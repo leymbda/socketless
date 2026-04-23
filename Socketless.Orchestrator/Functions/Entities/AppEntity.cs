@@ -1,15 +1,16 @@
-﻿using Microsoft.Azure.Functions.Worker;
+﻿using Microsoft.DurableTask;
 using Microsoft.DurableTask.Entities;
 using Socketless.Orchestrator.Entities;
 
-namespace Socketless.Orchestrator.Functions;
+namespace Socketless.Orchestrator.Functions.Entities;
 
+[DurableTask]
 public class AppEntity : TaskEntity<AppEntityState>
 {
     public static EntityInstanceId Id(AppId appId) =>
         new(nameof(AppEntity), appId.ToString());
 
-    public AppEntityState GetState() => State;
+    public Task<AppEntityState> GetState() => Task.FromResult(State);
 
     /// <summary>
     /// Set the ID of the primary node in use for this entity. A node may have multiple active nodes during a migration.
@@ -49,13 +50,8 @@ public class AppEntity : TaskEntity<AppEntityState>
     /// </summary>
     public void OnDedicatedIpDetached(AppEntityOnDedicatedIpDetachedInput input) =>
         State.IpAddresses.Remove(new AppEntityDedicatedIpId(input.IpId, input.NodeId));
-
-    [Function(nameof(AppEntity))]
-    public static Task RunEntityAsync([EntityTrigger] TaskEntityDispatcher dispatcher)
-        => dispatcher.DispatchAsync<AppEntity>();
 }
 
-// State
 public class AppEntityState
 {
     public NodeId? PrimaryNodeId { get; set; } = null;
@@ -69,7 +65,6 @@ public class AppEntityState
 
 public record AppEntityDedicatedIpId(DedicatedIpId IpId, NodeId NodeId);
 
-// Inputs
 public record AppEntityOnDedicatedIpAttachedInput(DedicatedIpId IpId, NodeId NodeId);
 
 public record AppEntityOnDedicatedIpDetachedInput(DedicatedIpId IpId, NodeId NodeId);

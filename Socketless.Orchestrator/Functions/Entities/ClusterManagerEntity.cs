@@ -1,10 +1,11 @@
-﻿using Microsoft.Azure.Functions.Worker;
+﻿using Microsoft.DurableTask;
 using Microsoft.DurableTask.Entities;
 using Socketless.Orchestrator.Entities;
 using Socketless.Orchestrator.Services;
 
-namespace Socketless.Orchestrator.Functions;
+namespace Socketless.Orchestrator.Functions.Entities;
 
+[DurableTask]
 public class ClusterManagerEntity : TaskEntity<ClusterManagerEntityState>
 {
     public static EntityInstanceId Id() =>
@@ -91,13 +92,8 @@ public class ClusterManagerEntity : TaskEntity<ClusterManagerEntityState>
     /// </summary>
     public void OnNodeDeprovisioned(NodeId nodeId) =>
         State.Nodes.Remove(nodeId);
-
-    [Function(nameof(ClusterManagerEntity))]
-    public static Task RunEntityAsync([EntityTrigger] TaskEntityDispatcher dispatcher)
-        => dispatcher.DispatchAsync<ClusterManagerEntity>();
 }
 
-// State
 public class ClusterManagerEntityState
 {
     public Dictionary<NodeId, ClusterManagerNodeEntry> Nodes { get; set; } = [];
@@ -108,7 +104,6 @@ public record ClusterManagerNodeEntry(
     int ShardCount,
     float ShardCost);
 
-// Inputs
 public record ClusterManagerEntityAssignShardsInput(NodeId? PreferredNodeId, int Count, float Cost);
 
 public record ClusterManagerEntityReleaseShardsInput(NodeId NodeId, int Count, float Cost);

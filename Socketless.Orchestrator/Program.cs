@@ -1,6 +1,5 @@
 using Azure.Identity;
 using Azure.ResourceManager;
-using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -12,10 +11,7 @@ var builder = FunctionsApplication.CreateBuilder(args);
 builder.ConfigureFunctionsWebApplication();
 
 builder.Services
-    .AddApplicationInsightsTelemetryWorkerService()
-    .ConfigureFunctionsApplicationInsights()
     .AddHttpClient()
-    // TODO: How to register durable task client?!?
     .AddSingleton(_ => new ArmClient(new DefaultAzureCredential()))
     .AddSingleton<IResourceManager, AzureResourceManager>()
     .AddSingleton<IDiscord, Discord>();
