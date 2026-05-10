@@ -37,7 +37,7 @@ public class AppEntity : TaskEntity<AppEntityState>
     /// Update state to reflect nodes no longer running this app due to vacation.
     /// </summary>
     public void OnNodeVacated(NodeId nodeId) =>
-        State.NodeShardCounts.Remove(nodeId);
+        State.NodeShardCounts.Remove(nodeId); // TODO: App should not be concerned with vacation, this should just be a removal type of event
 
     /// <summary>
     /// Update state to reflect an attached dedicated IP being used for this app.
