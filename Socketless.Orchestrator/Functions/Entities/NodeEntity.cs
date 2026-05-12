@@ -37,12 +37,6 @@ public class NodeEntity : TaskEntity<NodeEntityState>
         State.Status = NodeEntityStatus.Vacating;
 
     /// <summary>
-    /// Update node status when node is faulted.
-    /// </summary>
-    public void OnFaulted() =>
-        State.Status = NodeEntityStatus.Faulted;
-
-    /// <summary>
     /// Add dedicated IP to node when attached.
     /// </summary>
     public void OnDedicatedIpAttached(DedicatedIpId dedicatedIpId) =>
@@ -57,7 +51,7 @@ public class NodeEntity : TaskEntity<NodeEntityState>
 
 public class NodeEntityState
 {
-    public NodeEntityStatus Status { get; set; } = NodeEntityStatus.Initializing;
+    public NodeEntityStatus Status { get; set; } = NodeEntityStatus.Active;
 
     public HashSet<ShardId> Shards { get; set; } = [];
 
@@ -66,8 +60,6 @@ public class NodeEntityState
 
 public enum NodeEntityStatus
 {
-    Initializing,
     Active,
     Vacating,
-    Faulted,
 }
