@@ -4,7 +4,7 @@ namespace Socketless.Orchestrator.Interfaces;
 
 public interface IResourceManager
 {
-    Task<NodeId> CreateNodeAsync(NodeId nodeId);
+    Task<WorkerId> ProvisionWorkerAsync(WorkerId workerId);
 
-    Task DeleteNodeAsync(NodeId nodeId);
+    Task DeprovisionWorkerAsync(WorkerId workerId);
 }
