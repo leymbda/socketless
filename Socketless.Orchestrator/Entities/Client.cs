@@ -15,11 +15,30 @@ public class Client(ClientId id, ClientIpTier ipTier)
     }
 }
 
-public readonly record struct ClientId(Guid Value)
+public readonly record struct ClientId(Guid Value) : IParsable<ClientId>
 {
     public static ClientId New() => new(Guid.NewGuid());
 
-    public static ClientId Parse(string value) => new(Guid.Parse(value));
+    public static ClientId Parse(string value, IFormatProvider? format = null)
+    {
+        var guid = Guid.Parse(value);
+        return new(guid);
+    }
+
+    public static bool TryParse(string? value, IFormatProvider? format, out ClientId result)
+    {
+        try
+        {
+            ArgumentNullException.ThrowIfNull(value, nameof(value));
+            result = Parse(value, format);
+            return true;
+        }
+        catch
+        {
+            result = default;
+            return false;
+        }
+    }
 
     public override string ToString() => Value.ToString();
 }

@@ -11,9 +11,26 @@ public readonly record struct WorkerId(Guid Value)
 {
     public static WorkerId New() => new(Guid.NewGuid());
 
-    public static WorkerId Parse(Guid value) => new(value);
+    public static WorkerId Parse(string value, IFormatProvider? format = null)
+    {
+        var guid = Guid.Parse(value);
+        return new(guid);
+    }
 
-    public static WorkerId Parse(string value) => new(Guid.Parse(value));
+    public static bool TryParse(string? value, IFormatProvider? format, out WorkerId result)
+    {
+        try
+        {
+            ArgumentNullException.ThrowIfNull(value, nameof(value));
+            result = Parse(value, format);
+            return true;
+        }
+        catch
+        {
+            result = default;
+            return false;
+        }
+    }
 
     public override string ToString() => Value.ToString();
 }

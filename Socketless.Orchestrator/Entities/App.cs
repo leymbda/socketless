@@ -17,9 +17,28 @@ public class App(AppId id, AppIpTier ipTier)
     }
 }
 
-public readonly record struct AppId(Snowflake Value)
+public readonly record struct AppId(Snowflake Value) : IParsable<AppId>
 {
-    public static AppId Parse(string value) => new(Snowflake.Parse(value));
+    public static AppId Parse(string value, IFormatProvider? format = null)
+    {
+        var snowflake = Snowflake.Parse(value);
+        return new(snowflake);
+    }
+
+    public static bool TryParse(string? value, IFormatProvider? format, out AppId result)
+    {
+        try
+        {
+            ArgumentNullException.ThrowIfNull(value, nameof(value));
+            result = Parse(value, format);
+            return true;
+        }
+        catch
+        {
+            result = default;
+            return false;
+        }
+    }
 
     public override string ToString() => Value.ToString();
 }

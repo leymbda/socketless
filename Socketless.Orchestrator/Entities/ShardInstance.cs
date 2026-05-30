@@ -15,7 +15,7 @@ public readonly record struct ShardInstanceId(ShardId ShardId, Guid Identifier)
 {
     public static ShardInstanceId New(ShardId shardId) => new(shardId, Guid.NewGuid());
 
-    public static ShardInstanceId Parse(string value)
+    public static ShardInstanceId Parse(string value, IFormatProvider? format = null)
     {
         try
         {
@@ -30,6 +30,21 @@ public readonly record struct ShardInstanceId(ShardId ShardId, Guid Identifier)
         catch (Exception ex)
         {
             throw new FormatException("Invalid shard instance ID format. Expected format: {shardId}:{guid}", ex);
+        }
+    }
+
+    public static bool TryParse(string? value, IFormatProvider? format, out ShardInstanceId result)
+    {
+        try
+        {
+            ArgumentNullException.ThrowIfNull(value, nameof(value));
+            result = Parse(value, format);
+            return true;
+        }
+        catch
+        {
+            result = default;
+            return false;
         }
     }
 

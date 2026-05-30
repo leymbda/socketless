@@ -49,6 +49,8 @@ public readonly record struct ShardInstanceStopOrchestratorId(ShardInstanceId Sh
     }
 
     public override string ToString() => Prefix + ShardInstanceId.ToString();
+
+    // TODO: Implement IParsable
 }
 
 [DurableEvent]

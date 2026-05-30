@@ -11,7 +11,7 @@ public class WorkerCreateOrchestrator : TaskOrchestrator<object?, Worker>
 
     public override async Task<Worker> RunAsync(TaskOrchestrationContext ctx, object? input)
     {
-        var workerId = WorkerId.Parse(ctx.NewGuid());
+        var workerId = WorkerId.Parse(ctx.NewGuid().ToString());
 
         if (ctx.InstanceId != InstanceId)
             throw new InvalidOperationException($"InstanceId must be {InstanceId} to ensure singleton");
