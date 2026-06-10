@@ -26,9 +26,7 @@ public class ShardInstanceStopOrchestrator : TaskOrchestrator<object?, object?>
         var capacity = await ctx.CallWorkerCapacityReviewActivityAsync(true);
 
         if (capacity == WorkerCapacityReviewResult.ExcessiveCapacity)
-        {
-            // TODO: Scale in worker pool (and confirm this wont cause issues with race conditions)
-        }
+            await ctx.CallWorkerScaleInFireAndForgetActivityAsync(true);
 
         return null;
     }

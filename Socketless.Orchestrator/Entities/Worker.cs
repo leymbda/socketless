@@ -7,7 +7,7 @@ public class Worker(WorkerId id, WorkerStatus status)
     public WorkerStatus Status { get; set; } = status;
 }
 
-public readonly record struct WorkerId(Guid Value)
+public readonly record struct WorkerId(Guid Value) : IParsable<WorkerId>
 {
     public static WorkerId New() => new(Guid.NewGuid());
 

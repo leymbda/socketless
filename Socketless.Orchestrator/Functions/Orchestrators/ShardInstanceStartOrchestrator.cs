@@ -21,7 +21,16 @@ public class ShardInstanceStartOrchestrator : TaskOrchestrator<ShardInstanceStar
 
             if (workerId is null)
             {
-                // TODO: Create new worker (with handling for if the orchestrator is already in progress, maybe timeout)
+                try
+                {
+                    var worker = await ctx.CallWorkerCreateOrchestratorAsync(options: new TaskOptions().WithInstanceId(WorkerCreateOrchestrator.InstanceId));
+                    workerId = worker.Id;
+                }
+                catch (TaskFailedException)
+                {
+                    using var cts = new CancellationTokenSource();
+                    await ctx.CreateTimer(ctx.CurrentUtcDateTime.AddSeconds(15), cts.Token);
+                }
             }
         }
 
@@ -36,9 +45,7 @@ public class ShardInstanceStartOrchestrator : TaskOrchestrator<ShardInstanceStar
         var capacity = await ctx.CallWorkerCapacityReviewActivityAsync(true);
 
         if (capacity == WorkerCapacityReviewResult.MinimalCapacity)
-        {
-            // TODO: Create new worker (with handling for if the orchestrator is already in progress, maybe timeout)
-        }
+            await ctx.CallWorkerScaleOutFireAndForgetActivityAsync(true);
 
         return shardInstance;
     }

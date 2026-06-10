@@ -37,6 +37,8 @@ builder.Services
             registry.AddActivity<WorkerPoolShardInstanceStartActivity>();
             registry.AddActivity<WorkerPoolShardInstanceStopActivity>();
             registry.AddActivity<WorkerProvisionActivity>();
+            registry.AddActivity<WorkerScaleInFireAndForgetActivity>();
+            registry.AddActivity<WorkerScaleOutFireAndForgetActivity>();
             registry.AddActivity<WorkerStatusUpdateActivity>();
 
             registry.AddOrchestrator<ShardInstanceStartOrchestrator>();
@@ -73,5 +75,3 @@ file class StubWorkerPoolRepository : IWorkerPoolRepository
     public Task<ShardInstance?> UpdateShardInstanceStatus(ShardInstanceId shardInstanceId, ShardInstanceStatus status) => throw new NotImplementedException();
     public Task<Worker?> UpdateWorkerStatus(WorkerId workerId, WorkerStatus status) => throw new NotImplementedException();
 }
-
-// TODO: Figure out why generated functions (activities, orchestrators, etc.) are not showing up when running the application
