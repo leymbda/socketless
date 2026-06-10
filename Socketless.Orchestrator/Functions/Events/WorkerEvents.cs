@@ -25,7 +25,7 @@ public static class WorkerEvents
     {
     }
 
-    [Function(nameof(WorkerStoppedEventGridEvent))]
+    [Function(nameof(WorkerDiedEventGridEvent))]
     public static async Task WorkerDiedEventGridEvent([EventGridTrigger] EventGridEvent ev)
     {
     }
